@@ -76,16 +76,16 @@ Date format(char raw[]){
     int yearcount=2000,daycount=0,monthcount=1;
     while(yearcount!=current.year){
         for(i=0;i<12;i++){
-            daycount+=bs[yearcount-1999][i];
+            daycount+=bs[yearcount-2000][i];
         };
         yearcount+=1;
     }
 
     while(monthcount!=current.month){
-        daycount+=bs[yearcount-1999][monthcount-1];
+        daycount+=bs[yearcount-2000][monthcount-1];
         monthcount+=1;
     }
-    if(current.day>bs[yearcount-1999][monthcount-1]){
+    if(current.day>bs[yearcount-2000][monthcount-1]){
        strcpy(convert.error,"Entered Date Donot exist");
        return convert;
     }
@@ -121,12 +121,91 @@ Date format(char raw[]){
     }
     return convert;
  }
+ int sum(int a[]){
+     int i,sum=0;
+     for(i=0;i<12;i++){
+         sum+=a[i];
+     }
+     return sum;
+     
+ }
 
 Date Ad2Bs(char raw[]){
+  int i;
+  Date current=format(raw);
+  Date convert;
+    strcpy(convert.error,"");
+    if(strlen(current.error)!=0){
+         strcpy(convert.error,"INVALID DATE [YYYY-MM-DD]");
+       return convert;
+    }
 
+
+    if(current.year<1944|| current.year>2034){
+       strcpy(convert.error,"Year out of Range(1944-2034)");
+       return convert;
+
+    };
+    if(current.month>12){
+        strcpy(convert.error,"Invalid Month");
+       return convert;
+
+    };
+    if(current.month>31){
+        strcpy(convert.error,"Invalid Day");
+       return convert;
+
+    };
+
+    int yearcount=1943,daycount=0,monthcount=1;
+    while(yearcount!=current.year){
+        daycount+=365;
+        if(leapyear(yearcount)){
+            daycount+=1;
+        }
+        yearcount+=1;
+    }
+      ad[1]=28;
+    if(leapyear(yearcount)){
+        ad[1]=29;
+    }
+
+    while(monthcount!=current.month){
+        daycount+=ad[monthcount-1];
+        monthcount+=1;
+    }
+    if(current.day>ad[monthcount-1]){
+       strcpy(convert.error,"Entered Date Donot exist");
+       return convert;
+    }
+    daycount+=current.day;
+    convert.weekday=((daycount+4)%7)+1;
+   
+    daycount-=103;
+    
+    convert.year=2000;
+    while (daycount>sum(bs[convert.year-2000])){
+        daycount-=sum(bs[convert.year-2000]);
+   
+        convert.year+=1;
+    }    
+    convert.month=1;
+  
+    while (daycount>0){
+        if(daycount>bs[convert.year-2000][convert.month-1]){
+            daycount-=bs[convert.year-2000][convert.month-1];
+            convert.month+=1;
+
+        }
+        else{
+            convert.day=daycount;
+            break;
+        }
+    }
+    return convert;
 }
 int main(){
-    Date a=Bs2Ad("2078-10-12");
+    Date a=Ad2Bs("2022-01-28");
     if(strlen(a.error)){
         printf("%s",a.error);
     }
