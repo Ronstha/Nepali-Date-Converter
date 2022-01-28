@@ -1,6 +1,6 @@
 #include <stdio.h> //Standard input output library
-#include <string.h> //String function
-#include <stdlib.h>
+#include <string.h> //String function like strlen(),strcpy()
+#include <stdlib.h>//function atoi()=>convert string to int
 struct date{
  int year;
  int month;
@@ -31,28 +31,45 @@ int slice(char raw[],int start,int end ){
     
 } 
 //Function to convert raw date to structured date
-Date serialize(char raw[]){
+Date format(char raw[]){
     
     int i;
-    Date serialized;
+    Date formatted;
+    strcpy(formatted.error,"");
     if(strlen(raw)!=10 || raw[4]!='-' || raw[7]!='-'){
-        strcpy(serialized.error,"Invalid Format");
-        return serialized;
+        strcpy(formatted.error,"Invalid Format");
+        return formatted;
     }
-    serialized.year=slice(raw,0,4);
-    serialized.month=slice(raw,5,7);
-    serialized.day=slice(raw,8,10);
-    return serialized;
+    formatted.year=slice(raw,0,4);
+    formatted.month=slice(raw,5,7);
+    formatted.day=slice(raw,8,10);
+    return formatted;
  }
 
  Date Bs2Ad(char raw[]){
      int i;
-    Date current=serialize(raw);
+    Date current=format(raw);
     Date convert;
+    strcpy(convert.error,"");
+    if(strlen(current.error)!=0){
+         strcpy(convert.error,"INVALID DATE [YYYY-MM-DD]");
+       return convert;
+    }
+
+
     if(current.year<2000|| current.year>2090){
+       strcpy(convert.error,"Year out of Range(2000-2090)");
+       return convert;
 
     };
     if(current.month>12){
+        strcpy(convert.error,"Invalid Month");
+       return convert;
+
+    };
+    if(current.month>32){
+        strcpy(convert.error,"Invalid Day");
+       return convert;
 
     };
 
@@ -69,7 +86,8 @@ Date serialize(char raw[]){
         monthcount+=1;
     }
     if(current.day>bs[yearcount-1999][monthcount-1]){
-
+       strcpy(convert.error,"Entered Date Donot exist");
+       return convert;
     }
     daycount+=current.day;
     convert.weekday=((daycount+2)%7)+1;
@@ -108,7 +126,15 @@ Date Ad2Bs(char raw[]){
 
 }
 int main(){
-    Date a=Bs2Ad("2078-10-14");
+    Date a=Bs2Ad("2078-10-12");
+    if(strlen(a.error)){
+        printf("%s",a.error);
+    }
+    else{
+
     printf("%d-%d-%d %d",a.year,a.month,a.day,a.weekday);
+    }
+
+        
     return 0;
 }
