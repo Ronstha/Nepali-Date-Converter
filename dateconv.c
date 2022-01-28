@@ -204,16 +204,3 @@ Date Ad2Bs(char raw[]){
     }
     return convert;
 }
-int main(){
-    Date a=Ad2Bs("2022-01-28");
-    if(strlen(a.error)){
-        printf("%s",a.error);
-    }
-    else{
-
-    printf("%d-%d-%d %d",a.year,a.month,a.day,a.weekday);
-    }
-
-        
-    return 0;
-}
