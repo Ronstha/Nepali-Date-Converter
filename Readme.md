@@ -1,4 +1,10 @@
 # Nepali Date Convertor
+
+There is no any formula for date conversion from BS to AD or viceversa as BS calender donot have any set number of days in month. This Program calculates days elapsed from a reference date (eg.in BS) and then add up calculated day elapsed to another refrence date (eg. in AD). The calculation is possible with array of days in month in bs calendar. The limit can be increased by adding more data. This program can convert for:
+- AD: 1944-2034
+- BS: 2000-2090
+
+
 ### _Usage_
 - Add dateconv.c to directory
 -  #include 'dateconv.c'
